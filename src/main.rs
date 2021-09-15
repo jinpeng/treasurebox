@@ -1,5 +1,4 @@
 use structopt::StructOpt;
-use reqwest::Url;
 use serde_derive::{Deserialize, Serialize};
 
 #[derive(Debug, StructOpt)]
@@ -32,15 +31,15 @@ struct Main {
     temp_max: f64,
     pressure: i32,
     humidity: i32,
-    sea_level: i32,
-    grnd_level: i32,
+    sea_level: Option<i32>,
+    grnd_level: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Wind {
     speed: f64,
     deg: i32,
-    gust: f64,
+    gust: Option<f64>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -78,14 +77,14 @@ struct WeatherResponse {
 async fn get_weather(city: &str) -> Result<WeatherResponse, reqwest::Error> {
     let url: String = format!("https://api.openweathermap.org/data/2.5/weather?q={}&appid=a093903fd9568150850ddebd91de0d0d", city);
     // println!("{}", url);
-    let url: Url = Url::parse(&url).unwrap();
+    // let url: Url = Url::parse(&url).unwrap();
     // println!("{:#?}", url);
     // let resp = reqwest::get(url).await?.json::<WeatherResponse>().await?;
-    let resp = reqwest::get(url).await?.text().await?;
-    let wr: WeatherResponse = serde_json::from_str(&resp).unwrap();
+    // let resp = reqwest::get(url).await?.text().await?;
+    // let wr: WeatherResponse = serde_json::from_str(&resp).unwrap();
     // println!("{:#?}", wr);
-    // Ok(reqwest::get(url).await?.json::<HashMap<String, String>>().await?)
-    Ok(wr)
+    // Ok(wr)
+    Ok(reqwest::get(url).await?.json::<WeatherResponse>().await?)
 }
 
 #[tokio::main]
