@@ -90,10 +90,12 @@ async fn get_weather(city: &str) -> Result<WeatherResponse, reqwest::Error> {
 #[tokio::main]
 async fn main() {
     let opt = Opt::from_args();
-    println!("{:?}", opt);
+    // println!("{:?}", opt);
 
     match get_weather(&opt.city).await {
-        Ok(resp) => println!("{:#?}", resp),
+        Ok(resp) => {
+            println!("{}, Temperature: {:.2}", resp.weather[0].main, resp.main.temp - 273.15);
+        },
         Err(e) => println!("{:#?}", e)
     }
 }
